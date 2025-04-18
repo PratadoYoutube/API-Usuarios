@@ -57,6 +57,18 @@ class UserController {
            res.status(500).json({message: `${erro.message} - falha na exclusão do usuário`});
         }
     };
+
+    static async listUserByName (req, res) {
+        const nome = req.query.nome;
+        try {
+            const usersByName = await user.find({
+                nome: { $regex: nome, $options: "i" }
+            });
+            res.status(200).json(usersByName);
+        } catch (error) {
+            res.status(500).json({ message: `${error.message} - falha na busca` });
+        }
+    }    
 };
 
 export default UserController
