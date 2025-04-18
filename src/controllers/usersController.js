@@ -1,4 +1,5 @@
 import user from "../models/user.js";
+import {profile} from "../models/profile.js"
 
 class UserController {
 
@@ -24,8 +25,11 @@ class UserController {
     };
 
     static async registerUser (req, res){
+        const newUser = req.body;
         try {
-            const newUser = await user.create(req.body);
+            const profileFound = await profile.findById(newUser.profile);
+            const fullProfile = {...newUser, profile: {...profileFound._doc}};
+            const createProfile = await user.create(fullProfile);
             res.status(201).json({message: "criado com sucesso", user: newUser});
         } catch (error){
             res.status(500).json({message: `${error.message} - falha ao cadastrar usuário `});
